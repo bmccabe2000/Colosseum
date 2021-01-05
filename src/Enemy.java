@@ -5,6 +5,7 @@ public class Enemy {
     private double enemyHealth = 100;
     private double enemyAttack = 1;
     private double enemyDefense = 1;
+    private double enemyMana = 10;
 
     //Default constructor will set the enemy's name to just Enemy if no name is pased when an enemy object is created
     public Enemy(){
@@ -45,6 +46,14 @@ public class Enemy {
 
     public void setEnemyDefense(double enemyDefense) {
         this.enemyDefense = enemyDefense;
+    }
+
+    public double getEnemyMana() {
+        return enemyMana;
+    }
+
+    public void setEnemyMana(double enemyMana) {
+        this.enemyMana = enemyMana;
     }
 
 }

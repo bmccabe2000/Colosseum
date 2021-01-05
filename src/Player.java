@@ -1,9 +1,12 @@
 //This class represents the player and all of the attributes associated with them
 public class Player {
+
     private String playerName = "";
     private double playerHealth = 100;
     private double playerAttack = 1;
     private double playerDefense = 1;
+    private double playerMana = 10;
+    private boolean combatStatus = false;
 
     //If a player object is created with no name passed then a default "Player" name is used
     public Player(){
@@ -44,5 +47,21 @@ public class Player {
 
     public void setPlayerDefense(double playerDefense) {
         this.playerDefense = playerDefense;
+    }
+
+    public double getPlayerMana() {
+        return playerMana;
+    }
+
+    public void setPlayerMana(double playerMana) {
+        this.playerMana = playerMana;
+    }
+
+    public boolean getCombatStatus() {
+        return combatStatus;
+    }
+
+    public void setCombatStatus(boolean combatStatus) {
+        this.combatStatus = combatStatus;
     }
 }
