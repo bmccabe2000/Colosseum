@@ -7,11 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javax.swing.*;
 
 public class Main extends Application {
 
@@ -73,52 +71,9 @@ public class Main extends Application {
 
         //Game logic starts here
         Player mainPlayer = new Player();
-        start(mainPlayer);
-        setPlayerStatusField(mainPlayer);
-    }
-
-    //Controls the start of the game, including loading a saved game the player might have.
-    public void start(Player player){
-
-        int reply = JOptionPane.showConfirmDialog(null, "Load a saved game?\n" + "WARNING - SAVE GAME WILL\nBE OVERRIDDEN IF A\nNEW GAME IS STARTED", "Save Operation", JOptionPane.YES_NO_OPTION);
-
-        //TODO add loading function for player
-        if (reply == JOptionPane.YES_OPTION) {
-            messages.setText("Save game loaded");
-
-        }
-        else {
-            characterCreation(player);
-            messages.clear();
-            introduction();
-        }
-
-    }
-
-    //Lets the user create a character if they didn't load one
-    public void characterCreation(Player player){
-        player.setPlayerName(JOptionPane.showInputDialog(null,"Please enter a name for your player"));
-    }
-
-    //TODO Write an introduction
-    //A short introduction that explains what the game is
-    public void introduction(){
-        messages.setText("");
-    }
-
-    //Takes in the player class and outputs the player's stats to the playerStats field
-    public void setPlayerStatusField(Player player){
-        playerStats.setText("Name: " + player.getPlayerName() + "\n" + "Health: " + player.getPlayerHealth()  + "\n" + "Attack: " + player.getPlayerAttack() + "\n" + "Defense: " + player.getPlayerDefense() + "\n" + "Mana: " + player.getPlayerMana());
-    }
-
-    //Takes in an enemy class and outputs the enemy's stats to the enemyStats field
-    public void setEnemyStatusField(Enemy enemy){
-        enemyStats.setText("Name: " + enemy.getEnemyName() + "\n" + "Health: " + enemy.getEnemyHealth()  + "\n" + "Attack: " + enemy.getEnemyAttack() + "\n" + "Defense: " + enemy.getEnemyDefense() + "\n" + "Mana: " + enemy.getEnemyMana());
-    }
-
-    //Takes a string input and sets that to the messages field
-    public void setMessageField(String message){
-        messages.setText(message);
+        AuxiliaryLogic auxiliaryLogic = new AuxiliaryLogic();
+        auxiliaryLogic.start(messages, playerStats, enemyStats, nextBtn, mainPlayer);
+        auxiliaryLogic.setPlayerStatusField(playerStats, mainPlayer);
     }
 
     public static void main(String[] args){
