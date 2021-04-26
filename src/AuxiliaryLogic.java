@@ -16,7 +16,6 @@ public class AuxiliaryLogic {
             nxtBtn.setOnAction(e -> {
                 messages.clear();
             });
-
         }
         else {
             characterCreation(player);
