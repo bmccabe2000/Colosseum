@@ -1,3 +1,4 @@
+import Enemies.Enemy;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
@@ -26,7 +27,7 @@ public class AuxiliaryLogic {
 
     //Writes out the introduction text
     public void introduction(TextArea messages){
-        messages.setText("");
+        messages.setText("Welcome to Colosseum! Your goal is to win as many battles as you can.");
     }
 
     //Takes the player through the character creation process

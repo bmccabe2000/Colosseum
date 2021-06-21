@@ -13,18 +13,22 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     public void start(Stage primaryStage){
+        //Creating some basic insets to use for padding as a lot of the panes use the same padding
+        Insets basicInsets = new Insets(10,10,10,10);
+
         //Border pane will be used for organizing the other panes
         BorderPane battleOrgPane = new BorderPane();
-        battleOrgPane.setPadding(new Insets(10,10,10,10));
+        battleOrgPane.setPadding(basicInsets);
 
         //This HBox pane will host the main control buttons at the bottom of the application
         HBox battleControlButtonsPane = new HBox();
-        battleControlButtonsPane.setPadding(new Insets(10,10,10,10));
+        battleControlButtonsPane.setPadding(basicInsets);
         battleControlButtonsPane.setSpacing(50);
 
         //Control buttons
@@ -33,6 +37,7 @@ public class Main extends Application {
         Button defendBtn = new Button("Defend");
         Button fleeBtn = new Button("Flee");
         Button spellBtn = new Button("Use Spell");
+        Button backButton = new Button ("Back");
 
         //Adding buttons to the control pane and setting them along the bottom of the application
         battleControlButtonsPane.getChildren().addAll(nextBtn, attackBtn, defendBtn, fleeBtn, spellBtn);
@@ -71,11 +76,11 @@ public class Main extends Application {
 
         //The following code creates an "between" scene that is used when the player is between battles
         //Most of the coder is similar to that used for the battle scene but with different objects
-        BorderPane shopOrgPane = new BorderPane();
-        shopOrgPane.setPadding(new Insets(10,10,10,10));
+        BorderPane betweenMenuOrgPane = new BorderPane();
+        betweenMenuOrgPane.setPadding(basicInsets);
 
         //Setting up a new scene for the between phase
-        Scene betweenScene = new Scene(shopOrgPane, 1000, 500);
+        Scene betweenScene = new Scene(betweenMenuOrgPane, 1000, 500);
 
         //Creating a list view with a static list that will list out options the player has to select from
         ObservableList<String> options = FXCollections.observableArrayList("Shop", "Training", "Next Battle", "Exit Game");
@@ -87,26 +92,84 @@ public class Main extends Application {
         TextArea optionDescriptions = new TextArea();
         optionDescriptions.setEditable(false);
 
-        //Setting the text area's to the shopOrgPane
-        shopOrgPane.setCenter(optionDescriptions);
-        shopOrgPane.setTop(playerOptions);
+        //Setting the text area's to the betweenMenuOrgPane
+        betweenMenuOrgPane.setCenter(optionDescriptions);
+        betweenMenuOrgPane.setRight(playerOptions);
 
         //Height binding the options and optionDescriptions to reasonable sizes
         playerOptions.setPrefHeight(betweenScene.getHeight()/5);
 
         //Creating a select button
-        Button selectButton = new Button("Select");
+        Button menuSelectButton = new Button("Select");
 
         //Setting up a simple HBox to house the select button
         HBox selectButtonBox = new HBox();
-        selectButtonBox.getChildren().add(selectButton);
+        selectButtonBox.getChildren().addAll(menuSelectButton, backButton);
         selectButtonBox.setAlignment(Pos.CENTER);
-        selectButtonBox.setPadding(new Insets(10,10,10,10));
-        shopOrgPane.setBottom(selectButtonBox);
+        selectButtonBox.setPadding(basicInsets);
+        selectButtonBox.setSpacing(10);
+        betweenMenuOrgPane.setBottom(selectButtonBox);
+
+        //Creating a menu for the shop interface
+        BorderPane shopOrgPane = new BorderPane();
+        shopOrgPane.setPadding(basicInsets);
+
+        //Setting up an HBox to host a select button at the bottom of the pane
+        HBox shopMenuButtonBox = new HBox();
+        Button shopSelectButton = new Button("Select");
+        shopMenuButtonBox.getChildren().addAll(shopSelectButton, backButton);
+        shopMenuButtonBox.setAlignment(Pos.CENTER);
+        shopMenuButtonBox.setPadding(basicInsets);
+        shopMenuButtonBox.setSpacing(10);
+        shopOrgPane.setBottom(shopMenuButtonBox);
+
+        //Setting up a list view that will hold items the shop is selling
+        ObservableList<String> itemsForSale = FXCollections.observableArrayList("PlaceHolder");
+        ListView<String> shopItems = new ListView(itemsForSale);
+        shopItems.setEditable(false);
+        shopItems.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        shopOrgPane.setLeft(shopItems);
+
+        //Setting up a text box that will hold a description of items the shop is selling that they user has selected
+        TextArea itemDescription = new TextArea();
+        itemDescription.setEditable(false);
+        shopOrgPane.setCenter(itemDescription);
+
+        //Setting up a new scene for the shop
+        Scene shopScene = new Scene(shopOrgPane, 1000, 500);
+
+        //Creating one final menu for training
+        BorderPane trainingOrgPane = new BorderPane();
+        trainingOrgPane.setPadding(basicInsets);
+
+        //Setting up an HBox to host a select button at the bottom of the pane
+        HBox trainingMenuButtonBox = new HBox();
+        Button trainingSelectButton = new Button("Select");
+        trainingMenuButtonBox.getChildren().addAll(shopSelectButton, backButton);
+        trainingMenuButtonBox.setAlignment(Pos.CENTER);
+        trainingMenuButtonBox.setPadding(basicInsets);
+        trainingMenuButtonBox.setSpacing(10);
+        trainingOrgPane.setBottom(trainingSelectButton);
+
+        //Setting up a list view that will hold items the shop is selling
+        ObservableList<String> trainingOptionsList = FXCollections.observableArrayList("PlaceHolder");
+        ListView<String> trainingOptions = new ListView(itemsForSale);
+        trainingOptions.setEditable(false);
+        trainingOptions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        trainingOrgPane.setLeft(trainingOptions);
+
+        //Setting up a text box that will hold a description of items the shop is selling that they user has selected
+        TextArea trainingDescription = new TextArea();
+        itemDescription.setEditable(false);
+        trainingOrgPane.setCenter(trainingDescription);
+
+        //Setting up a new scene for the shop
+        Scene trainingScene = new Scene(trainingOrgPane, 1000, 500);
 
         //Setting up the stage
+        //Available scenes: battleScene, betweenScene, shopScene, trainingScene
         primaryStage.setTitle("Colosseum");
-        primaryStage.setScene(betweenScene);
+        primaryStage.setScene(battleScene);
         primaryStage.show();
 
         //Game logic starts here

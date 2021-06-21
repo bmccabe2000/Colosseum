@@ -1,13 +1,16 @@
+package Enemies;
+
 //This class is for enemies the player will face and is extended to more specific enemy classes
-public class Enemy {
+abstract public class Enemy {
 
     private String enemyName = "";
+    private double enemyLevel = 1;
     private double enemyHealth = 100;
     private double enemyAttack = 1;
     private double enemyDefense = 1;
     private double enemyMana = 10;
 
-    //Default constructor will set the enemy's name to just Enemy if no name is pased when an enemy object is created
+    //Default constructor will set the enemy's name to just Enemy if no name is passed when an enemy object is created
     public Enemy(){
         this.enemyName = "Enemy";
     }
@@ -22,6 +25,14 @@ public class Enemy {
 
     public void setEnemyName(String enemyName) {
         this.enemyName = enemyName;
+    }
+
+    public double getEnemyLevel() {
+        return enemyLevel;
+    }
+
+    public void setEnemyLevel(double enemyLevel) {
+        this.enemyLevel = enemyLevel;
     }
 
     public double getEnemyHealth() {
@@ -55,5 +66,8 @@ public class Enemy {
     public void setEnemyMana(double enemyMana) {
         this.enemyMana = enemyMana;
     }
+
+    abstract public void specialAttack();
+
 
 }
