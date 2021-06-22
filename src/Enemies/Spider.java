@@ -5,6 +5,6 @@ public class Spider extends Enemy {
 
     @Override
     public void specialAttack() {
-        //Add in a poison attack
+       //TODO Add in a poison attack or maybe a web attack that prevents a player from attacking for a turn?
     }
 }

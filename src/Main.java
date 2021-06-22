@@ -13,8 +13,10 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import Enemies.*;
+
+import java.util.HashMap;
 
 public class Main extends Application {
 
@@ -172,8 +174,12 @@ public class Main extends Application {
         primaryStage.setScene(battleScene);
         primaryStage.show();
 
-        //Game logic starts here
+        //**************************
+        //* Game driver starts here *
+        //**************************
+        //Starting off by setting up player and logic classes
         Player mainPlayer = new Player();
+        BattleLogic battleLogic = new BattleLogic();
         AuxiliaryLogic auxiliaryLogic = new AuxiliaryLogic();
         auxiliaryLogic.start(messages, playerStats, enemyStats, nextBtn, mainPlayer);
         auxiliaryLogic.setPlayerStatusField(playerStats, mainPlayer);

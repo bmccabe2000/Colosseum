@@ -15,6 +15,16 @@ abstract public class Enemy {
         this.enemyName = "Enemy";
     }
 
+    //Added this populateStats function for child classes to easily populate their stats when they are initiated in the EnemyBank
+    public void populateStats(String name, double level, double health, double attack, double defense, double mana){
+        this.enemyName = name;
+        this.enemyLevel = level;
+        this.enemyHealth = health;
+        this.enemyAttack = attack;
+        this.enemyDefense = defense;
+        this.enemyMana = mana;
+    }
+
     public Enemy(String name){
         this.enemyName = name;
     }
