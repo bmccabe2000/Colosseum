@@ -2,6 +2,7 @@
 public class Player {
 
     private String playerName = "";
+    private int playerLevel = 1;
     private double playerHealth = 100;
     private double playerAttack = 1;
     private double playerDefense = 1;
@@ -23,6 +24,14 @@ public class Player {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public int getPlayerLevel() {
+        return playerLevel;
+    }
+
+    public void setPlayerLevel(int playerLevel) {
+        this.playerLevel = playerLevel;
     }
 
     public double getPlayerHealth() {

@@ -4,7 +4,7 @@ package Enemies;
 abstract public class Enemy {
 
     private String enemyName = "";
-    private double enemyLevel = 1;
+    private int enemyLevel = 1;
     private double enemyHealth = 100;
     private double enemyAttack = 1;
     private double enemyDefense = 1;
@@ -16,7 +16,7 @@ abstract public class Enemy {
     }
 
     //Added this populateStats function for child classes to easily populate their stats when they are initiated in the EnemyBank
-    public void populateStats(String name, double level, double health, double attack, double defense, double mana){
+    public void populateStats(String name, int level, double health, double attack, double defense, double mana){
         this.enemyName = name;
         this.enemyLevel = level;
         this.enemyHealth = health;
@@ -41,7 +41,7 @@ abstract public class Enemy {
         return enemyLevel;
     }
 
-    public void setEnemyLevel(double enemyLevel) {
+    public void setEnemyLevel(int enemyLevel) {
         this.enemyLevel = enemyLevel;
     }
 

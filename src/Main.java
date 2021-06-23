@@ -182,7 +182,7 @@ public class Main extends Application {
         BattleLogic battleLogic = new BattleLogic();
         AuxiliaryLogic auxiliaryLogic = new AuxiliaryLogic();
         auxiliaryLogic.start(messages, playerStats, enemyStats, nextBtn, mainPlayer);
-        auxiliaryLogic.setPlayerStatusField(playerStats, mainPlayer);
+        battleLogic.setPlayerStatusField(playerStats, mainPlayer);
     }
 
     public static void main(String[] args){

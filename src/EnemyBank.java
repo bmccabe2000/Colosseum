@@ -1,26 +1,27 @@
 import Enemies.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-//This class creates and stores a retrievable hash map of enemies where the key is the enemies name.
-//Names stored in the hashMap have the fist letter capitalized as do the actually names of the enemies.
+//This class creates and stores a retrievable list of enemies
 public class EnemyBank {
 
-    private HashMap<String, Enemy> enemyHashMap = new HashMap();
+    private List<Enemy> enemyList = new ArrayList<>();
 
-    public HashMap<String, Enemy> getEnemyHashMap() {
-        return enemyHashMap;
+    public List<Enemy> getEnemyList() {
+        return enemyList;
     }
 
-    public void setEnemyHashMap(HashMap<String, Enemy> enemyHashMap) {
-        this.enemyHashMap = enemyHashMap;
+    public void setEnemyList(List<Enemy> enemyList) {
+        this.enemyList.addAll(enemyList);
     }
 
-    //This function generates all of the enemies in the game and adds them to the hash map of enemies
+    //This function generates all of the enemies in the game and adds them to the list of enemies
     public void generateEnemies() {
         Spider spider = new Spider();
         spider.populateStats("Spider", 1, 10,1,1,10);
-        enemyHashMap.put(spider.getEnemyName(), spider);
+        enemyList.add(spider);
 
         //TODO add more enemies
     }
