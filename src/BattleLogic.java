@@ -1,4 +1,6 @@
 import Enemies.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
@@ -14,14 +16,9 @@ public class BattleLogic {
     private Enemy currentEnemy = null;
     private EnemyBank enemyBank = new EnemyBank();
     private List<Enemy> enemyList = new ArrayList<>();
-
-    public Enemy getCurrentEnemy() {
-        return currentEnemy;
-    }
-
-    public void setCurrentEnemy(Enemy currentEnemy) {
-        this.currentEnemy = currentEnemy;
-    }
+    private int turn = 0;
+    private boolean playerTurn = false;
+    private boolean enemyTurn = false;
 
     //Populates the list of enemies using the enemy bank class
     public void populateEnemyList(){
@@ -30,11 +27,7 @@ public class BattleLogic {
     }
 
     //This function controls the battle phase of the game
-    public void initiateBattle(TextArea messages, TextArea playerStats, TextArea enemyStats, Button nxtBtn, Button attackBtn, Button defendBtn, Button fleeBtn, Button spellBtn, Button backBtn, Player player){
-        int turn = 0;
-        boolean playerTurn = false;
-        boolean enemyTurn = false;
-
+    public void battle(TextArea messages, TextArea playerStats, TextArea enemyStats, Button nxtBtn, Button attackBtn, Button defendBtn, Button fleeBtn, Button spellBtn, Button backBtn, Player player){
         //TODO 1.Generate an enemy and set it to the current enemy to fight (DONE) 2.Create a system for deciding who goes first 3.Write out the logic of battling
         //Checking if the enemyList is populated and populating it if its not
         if(enemyList.isEmpty()){
@@ -44,16 +37,70 @@ public class BattleLogic {
         //Getting a list of enemies that are within 2 levels of the players range and picking one randomly
         List<Enemy> enemiesInRange = generateEnemiesInRange(player);
 
-        currentEnemy = enemiesInRange.get((int)(Math.random() * (enemiesInRange.size() - 0) + 0));
+        currentEnemy = enemiesInRange.get((int)(Math.random() * ((enemiesInRange.size() - 1) - 0) + 0));
 
-        setEnemyStatusField(enemyStats, currentEnemy);
+        //Setting both status fields prior to battle
+        updateStatuses(enemyStats, playerStats, player);
 
-        //Updating the player status field in case of any player status changes
-        setPlayerStatusField(playerStats, player);
+        //Set of event handlers for each button press
+        //After a button press the appropriate action is taken before the status fields are updated, then the enemy takes its turn and the status fields are updated again
+        attackBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                double damage = player.getPlayerAttack() - (currentEnemy.getEnemyDefense() * 0.5);
+                currentEnemy.setEnemyHealth(currentEnemy.getEnemyHealth() - damage);
+                messages.appendText("\nYou attacked " + currentEnemy.getEnemyName() + " for " + damage + " damage!");
+                updateStatuses(enemyStats, playerStats, player);
+                enemyTurn(messages, playerStats, enemyStats, nxtBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backBtn, player);
+                updateStatuses(enemyStats, playerStats, player);
+            }
+        });
 
-        //Starting combat, using a coin flip for now to decide who goes first
+        defendBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                //TODO this probably needs to become a status that will be removed through a check statuses function after the enemies turn has ended.
+                double healing = player.getPlayerDefense() * 0.1;
+                double manaRegen = player.getPlayerDefense() * 0.2;
+                player.setPlayerHealth(player.getPlayerHealth() + healing);
+                messages.appendText("\nYou defended and healed for " + healing + " health and " + manaRegen + " mana");
+                updateStatuses(enemyStats, playerStats, player);
+                enemyTurn(messages, playerStats, enemyStats, nxtBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backBtn, player);
+                updateStatuses(enemyStats, playerStats, player);
+            }
+        });
 
+        spellBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                if(player.getPlayerMana() >= 1){
+                    double spellDamage = (Math.random() * (5 - 1) + 1);
+                    player.setPlayerMana(player.getPlayerMana() - 1);
+                    currentEnemy.setEnemyHealth(currentEnemy.getEnemyHealth() - spellDamage);
+                    messages.appendText("\nYou hurl a fireball at " + currentEnemy.getEnemyName() + " that does " + spellDamage + " damage");
+                }
+                else{
+                    messages.appendText("\nYou try to throw a fireball but it fizzles out in your hand because you don't have enough mana");
+                }
+                updateStatuses(enemyStats, playerStats, player);
+                enemyTurn(messages, playerStats, enemyStats, nxtBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backBtn, player);
+                updateStatuses(enemyStats, playerStats, player);
+            }
+        });
 
+        fleeBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                //TODO again, this needs to be a status that is handled and checked during battle
+                updateStatuses(enemyStats, playerStats, player);
+                enemyTurn(messages, playerStats, enemyStats, nxtBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backBtn, player);
+                updateStatuses(enemyStats, playerStats, player);
+            }
+        });
+
+        backBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                //TODO probably can remove this and replace it with something else.
+            }
+        });
+
+        //TODO implement some kind of statuses possibly its own class that is assigned to the player and enemy that has a check function here.
     }
 
     //This function returns a list of enemies that are in a range of 2 levels from the player.
@@ -78,9 +125,18 @@ public class BattleLogic {
         enemyStats.setText("Name: " + enemy.getEnemyName() + "\n" + "Health: " + enemy.getEnemyHealth()  + "\n" + "Attack: " + enemy.getEnemyAttack() + "\n" + "Defense: " + enemy.getEnemyDefense() + "\n" + "Mana: " + enemy.getEnemyMana());
     }
 
-    //Takes a string input and sets that to the messages field
-    public void setMessageField(TextArea messages, String message){
-        messages.setText(message);
+    //This functions handles the event handling for all of the buttons that the player can press on their turn
+    private void enemyTurn(TextArea messages, TextArea playerStats, TextArea enemyStats, Button nxtBtn, Button attackBtn, Button defendBtn, Button fleeBtn, Button spellBtn, Button backBtn, Player player){
+        double enemyDamage = currentEnemy.getEnemyAttack() - (player.getPlayerDefense() * 0.25);
+        player.setPlayerHealth(player.getPlayerHealth() - enemyDamage);
+        messages.appendText("\n" + currentEnemy.getEnemyName() + " attacks you for " + enemyDamage + " damage.");
+    }
+
+    //Updates the status fields for the player and enemy
+    private void updateStatuses(TextArea enemyStats, TextArea playerStats, Player player){
+        setEnemyStatusField(enemyStats, currentEnemy);
+        setPlayerStatusField(playerStats, player);
+
     }
 
 }

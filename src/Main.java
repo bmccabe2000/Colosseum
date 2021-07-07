@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class Main extends Application {
 
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
         //Creating some basic insets to use for padding as a lot of the panes use the same padding
         Insets basicInsets = new Insets(10,10,10,10);
 
@@ -183,6 +183,8 @@ public class Main extends Application {
         AuxiliaryLogic auxiliaryLogic = new AuxiliaryLogic();
         auxiliaryLogic.start(messages, playerStats, enemyStats, nextBtn, mainPlayer);
         battleLogic.setPlayerStatusField(playerStats, mainPlayer);
+        //Testing out battle mechanics
+        battleLogic.battle(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backButton, mainPlayer);
     }
 
     public static void main(String[] args){
