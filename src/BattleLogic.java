@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class BattleLogic {
     private int turn = 0;
     private boolean playerTurn = false;
     private boolean enemyTurn = false;
+    private DecimalFormat doubleFormat = new DecimalFormat("###.##");
 
     //Populates the list of enemies using the enemy bank class
     public void populateEnemyList(){
@@ -37,7 +39,7 @@ public class BattleLogic {
         //Getting a list of enemies that are within 2 levels of the players range and picking one randomly
         List<Enemy> enemiesInRange = generateEnemiesInRange(player);
 
-        currentEnemy = enemiesInRange.get((int)(Math.random() * ((enemiesInRange.size() - 1) - 0) + 0));
+        currentEnemy = enemiesInRange.get((int)(Math.random() * ((enemiesInRange.size() - 1)) + 0));
 
         //Setting both status fields prior to battle
         updateStatuses(enemyStats, playerStats, player);
@@ -46,8 +48,8 @@ public class BattleLogic {
         //After a button press the appropriate action is taken before the status fields are updated, then the enemy takes its turn and the status fields are updated again
         attackBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e){
-                double damage = player.getPlayerAttack() - (currentEnemy.getEnemyDefense() * 0.5);
-                currentEnemy.setEnemyHealth(currentEnemy.getEnemyHealth() - damage);
+                double damage = Double.parseDouble(doubleFormat.format(player.getPlayerAttack() - (currentEnemy.getEnemyDefense() * 0.5)));
+                currentEnemy.setEnemyHealth(Double.parseDouble(doubleFormat.format(currentEnemy.getEnemyHealth() - damage)));
                 messages.appendText("\nYou attacked " + currentEnemy.getEnemyName() + " for " + damage + " damage!");
                 updateStatuses(enemyStats, playerStats, player);
                 enemyTurn(messages, playerStats, enemyStats, nxtBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backBtn, player);
@@ -58,9 +60,9 @@ public class BattleLogic {
         defendBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e){
                 //TODO this probably needs to become a status that will be removed through a check statuses function after the enemies turn has ended.
-                double healing = player.getPlayerDefense() * 0.1;
-                double manaRegen = player.getPlayerDefense() * 0.2;
-                player.setPlayerHealth(player.getPlayerHealth() + healing);
+                double healing = Double.parseDouble(doubleFormat.format(player.getPlayerDefense() * 0.1));
+                double manaRegen = Double.parseDouble(doubleFormat.format(player.getPlayerDefense() * 0.2));
+                player.setPlayerHealth(Double.parseDouble(doubleFormat.format(player.getPlayerHealth() + healing)));
                 messages.appendText("\nYou defended and healed for " + healing + " health and " + manaRegen + " mana");
                 updateStatuses(enemyStats, playerStats, player);
                 enemyTurn(messages, playerStats, enemyStats, nxtBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backBtn, player);
@@ -71,9 +73,9 @@ public class BattleLogic {
         spellBtn.setOnAction(new EventHandler<ActionEvent>(){
             @Override public void handle(ActionEvent e){
                 if(player.getPlayerMana() >= 1){
-                    double spellDamage = (Math.random() * (5 - 1) + 1);
+                    double spellDamage = Double.parseDouble(doubleFormat.format((Math.random() * (5 - 1) + 1)));
                     player.setPlayerMana(player.getPlayerMana() - 1);
-                    currentEnemy.setEnemyHealth(currentEnemy.getEnemyHealth() - spellDamage);
+                    currentEnemy.setEnemyHealth(Double.parseDouble(doubleFormat.format(currentEnemy.getEnemyHealth() - spellDamage)));
                     messages.appendText("\nYou hurl a fireball at " + currentEnemy.getEnemyName() + " that does " + spellDamage + " damage");
                 }
                 else{
