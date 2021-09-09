@@ -7,7 +7,6 @@ public class Player {
     private double playerAttack = 1;
     private double playerDefense = 1;
     private double playerMana = 10;
-    private boolean combatStatus = false;
 
     //If a player object is created with no name passed then a default "Player" name is used
     public Player(){
@@ -66,11 +65,4 @@ public class Player {
         this.playerMana = playerMana;
     }
 
-    public boolean getCombatStatus() {
-        return combatStatus;
-    }
-
-    public void setCombatStatus(boolean combatStatus) {
-        this.combatStatus = combatStatus;
-    }
 }

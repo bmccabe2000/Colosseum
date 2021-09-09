@@ -4,6 +4,8 @@ TODO 1.Create GUI (DONE), 2.Add game logic (Basic, includes event handling for G
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,6 +18,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import Enemies.*;
 
+import javax.swing.*;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class Main extends Application {
@@ -37,12 +41,11 @@ public class Main extends Application {
         Button nextBtn = new Button("Next");
         Button attackBtn = new Button("Attack");
         Button defendBtn = new Button("Defend");
-        Button fleeBtn = new Button("Flee");
         Button spellBtn = new Button("Use Spell");
         Button backButton = new Button ("Back");
 
         //Adding buttons to the control pane and setting them along the bottom of the application
-        battleControlButtonsPane.getChildren().addAll(nextBtn, attackBtn, defendBtn, fleeBtn, spellBtn);
+        battleControlButtonsPane.getChildren().addAll(nextBtn, attackBtn, defendBtn, spellBtn);
         battleControlButtonsPane.setAlignment(Pos.CENTER);
         battleOrgPane.setBottom(battleControlButtonsPane);
 
@@ -174,17 +177,89 @@ public class Main extends Application {
         primaryStage.setScene(battleScene);
         primaryStage.show();
 
-        //**************************
+        //***************************
         //* Game driver starts here *
-        //**************************
+        //***************************
         //Starting off by setting up player and logic classes
         Player mainPlayer = new Player();
         BattleLogic battleLogic = new BattleLogic();
         AuxiliaryLogic auxiliaryLogic = new AuxiliaryLogic();
         auxiliaryLogic.start(messages, playerStats, enemyStats, nextBtn, mainPlayer);
         battleLogic.setPlayerStatusField(playerStats, mainPlayer);
-        //Testing out battle mechanics
-        battleLogic.battle(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, fleeBtn, spellBtn, backButton, mainPlayer);
+        //Testing out battle mechanics**************************************************************************************************
+        battleLogic.battle(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+        //Pulling the enemy from the battle and setting it here to use for checks
+        Enemy currentEnemy = battleLogic.getCurrentEnemy();
+
+        DecimalFormat doubleFormat = new DecimalFormat("###.##");
+
+        //*********************************************
+        //Declaring button handlers for battle buttons*
+        //*********************************************
+
+        //After a button press the appropriate action is taken before the status fields are updated, then the enemy takes its turn and the status fields are updated again
+        //Attacks are based off of the players attack - half of the enemies defense
+        attackBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                //TODO Add more randomness to attacking and defending just by a little so that attacks arent always the same strength
+                double damage = Double.parseDouble(doubleFormat.format((Math.random() * ((mainPlayer.getPlayerAttack() + 2) - mainPlayer.getPlayerAttack()) + (mainPlayer.getPlayerAttack()) - (currentEnemy.getEnemyDefense() * 0.5))));
+                currentEnemy.setEnemyHealth(Double.parseDouble(doubleFormat.format(currentEnemy.getEnemyHealth() - damage)));
+                messages.appendText("\nYou attacked " + currentEnemy.getEnemyName() + " for " + damage + " damage!");
+                battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+                battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+            }
+        });
+
+        //Defending will heal the player and also give them some mana
+        //It will also up their defence for a turn
+        defendBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                //TODO this probably needs to become a status that will be removed through a check statuses function after the enemies turn has ended.
+                double healing = Double.parseDouble(doubleFormat.format(Math.random() * (mainPlayer.getPlayerDefense() - 0.5) + 0.5));
+                double manaRegen = Double.parseDouble(doubleFormat.format(Math.random() * (mainPlayer.getPlayerDefense() - 0.5) + 0.5));
+                mainPlayer.setPlayerHealth(Double.parseDouble(doubleFormat.format(mainPlayer.getPlayerHealth() + healing)));
+                mainPlayer.setPlayerDefense(mainPlayer.getPlayerDefense() + 1);
+                messages.appendText("\nYou defended and healed for " + healing + " health and " + manaRegen + " mana");
+                battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+                battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                mainPlayer.setPlayerDefense(mainPlayer.getPlayerDefense() - 1);
+                battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+            }
+        });
+
+        //When a spell is cast, first it is determined if the user has enough mana to cast a spell, then a damage calculations are done and a spell is cast
+        //Could possibly add different spells in the future with a separate interface to pick spells from.
+        spellBtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                if(mainPlayer.getPlayerMana() >= 1){
+                    double spellDamage = Double.parseDouble(doubleFormat.format((Math.random() * (5 - 1) + 1)));
+                    mainPlayer.setPlayerMana(mainPlayer.getPlayerMana() - 1);
+                    currentEnemy.setEnemyHealth(Double.parseDouble(doubleFormat.format(currentEnemy.getEnemyHealth() - spellDamage)));
+                    messages.appendText("\nYou hurl a fireball at " + currentEnemy.getEnemyName() + " that does " + spellDamage + " damage");
+                }
+                else{
+                    messages.appendText("\nYou try to throw a fireball but it fizzles out in your hand because you don't have enough mana");
+                }
+                battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+                battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+            }
+        });
+        //End of battle testing******************************************************************************************************************
+
+
+    }
+
+    //Checks if the player or enemy has died and takes action accordingly
+    //Ties favor the enemy since the players health is checked first
+    public void WinLose(Player player, Enemy enemy, TextArea messages){
+        if(player.getPlayerHealth() <= 0){
+
+        }
+        else if(enemy.getEnemyHealth() <= 0 && player.getPlayerHealth() <= 0){
+
+        }
     }
 
     public static void main(String[] args){

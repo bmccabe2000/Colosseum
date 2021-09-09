@@ -18,7 +18,10 @@ public class EnemyBank {
     }
 
     //This function generates all of the enemies in the game and adds them to the list of enemies
+    //Clear is called on the enemyList before anything else to prevent duplicates from being added to the list and ensure
+    //that each entry has its default values
     public void generateEnemies() {
+        enemyList.clear();
         Spider spider = new Spider();
         spider.populateStats("Spider", 1, 10,1,1,10);
         enemyList.add(spider);
