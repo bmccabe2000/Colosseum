@@ -1,14 +1,13 @@
-import Enemies.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+package Project;
+
+import Project.Enemies.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-//This class handles logic during battles
+//This class handles the logic of enemies and parts of the display of the GUI during battles
 public class BattleLogic {
 
     private Enemy liveEnemy = null;
@@ -80,7 +79,7 @@ public class BattleLogic {
     }
 
     //Sets the current enemy
-    public void setCurrentEnemy(Enemy currentEnemy) {
+    public void setLiveEnemy(Enemy currentEnemy) {
         this.liveEnemy = currentEnemy;
     }
 
@@ -102,25 +101,6 @@ public class BattleLogic {
     //Sets the enemy list
     public void setEnemyList(List<Enemy> enemyList) {
         this.enemyList = enemyList;
-    }
-
-    //Checks the health of the current enemy and the play and calls conditional functions accordingly is the play or enemy are dead
-    //Advantage in a tie goes to the enemy since the players health is checked first
-    public void checkWinLoss(TextArea messages, Player player){
-        if(player.getPlayerHealth() <= 0){
-            messages.appendText("\nYou won the battle! Press Next to continue");
-            player.setPlayerDead(true);
-
-        }
-        else if(liveEnemy.getEnemyHealth() <= 0){
-            messages.appendText("\nYou lost the battle! Press Next to continue");
-            liveEnemy.setEnemyDead(true);
-        }
-    }
-
-    //Disables the battle buttons
-    public void disableBattleButtons(Button nxtBtn, Button attackBtn, Button defendBtn, Button spellBtn){
-
     }
 
 }

@@ -1,4 +1,5 @@
-import Enemies.Enemy;
+package Project;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 

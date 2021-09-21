@@ -1,10 +1,10 @@
-import Enemies.*;
+package Project;
 
+import Project.Enemies.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-//This class creates and stores a retrievable list of enemies
+//This class creates and stores a retrievable list of all enemies
 public class EnemyBank {
 
     private List<Enemy> enemyList = new ArrayList<>();
@@ -22,8 +22,7 @@ public class EnemyBank {
     //that each entry has its default values
     public void generateEnemies() {
         enemyList.clear();
-        Spider spider = new Spider();
-        spider.populateStats("Spider", 1, 10,1,1,10);
+        Spider spider = new Spider("Spider", 1, 10,1,1,10,10,1,1,10);
         enemyList.add(spider);
 
         //TODO add more enemies

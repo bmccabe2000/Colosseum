@@ -1,4 +1,4 @@
-package Enemies;
+package Project.Enemies;
 
 //This class is for enemies the player will face and is extended to more specific enemy classes
 abstract public class Enemy {
@@ -9,24 +9,23 @@ abstract public class Enemy {
     private double enemyAttack = 1;
     private double enemyDefense = 1;
     private double enemyMana = 10;
+    private double maxEnemyHealth = 100;
+    private double maxEnemyAttack = 1;
+    private double maxEnemyDefense = 1;
+    private double maxEnemyMana = 10;
 
-    //Default constructor will set the enemy's name to just Enemy if no name is passed when an enemy object is created
-    public Enemy(){
-        this.enemyName = "Enemy";
-    }
-
-    //Added this populateStats function for child classes to easily populate their stats when they are initiated in the EnemyBank
-    public void populateStats(String name, int level, double health, double attack, double defense, double mana){
+    //Default constructor
+    public Enemy(String name, int level, double health, double attack, double defense, double mana, double maxHealth, double maxAttack, double maxDefense, double maxMana){
         this.enemyName = name;
         this.enemyLevel = level;
         this.enemyHealth = health;
         this.enemyAttack = attack;
         this.enemyDefense = defense;
         this.enemyMana = mana;
-    }
-
-    public Enemy(String name){
-        this.enemyName = name;
+        this.maxEnemyHealth = maxHealth;
+        this.maxEnemyAttack = maxAttack;
+        this.maxEnemyDefense = maxDefense;
+        this.maxEnemyMana = maxMana;
     }
 
     public String getEnemyName() {
@@ -77,6 +76,39 @@ abstract public class Enemy {
         this.enemyMana = enemyMana;
     }
 
+    public double getMaxEnemyHealth() {
+        return maxEnemyHealth;
+    }
+
+    public void setMaxEnemyHealth(double maxEnemyHealth) {
+        this.maxEnemyHealth = maxEnemyHealth;
+    }
+
+    public double getMaxEnemyAttack() {
+        return maxEnemyAttack;
+    }
+
+    public void setMaxEnemyAttack(double maxEnemyAttack) {
+        this.maxEnemyAttack = maxEnemyAttack;
+    }
+
+    public double getMaxEnemyDefense() {
+        return maxEnemyDefense;
+    }
+
+    public void setMaxEnemyDefense(double maxEnemyDefense) {
+        this.maxEnemyDefense = maxEnemyDefense;
+    }
+
+    public double getMaxEnemyMana() {
+        return maxEnemyMana;
+    }
+
+    public void setMaxEnemyMana(double maxEnemyMana) {
+        this.maxEnemyMana = maxEnemyMana;
+    }
+
+    //Every enemy has a special attack that uniquely effects the player
     abstract public void specialAttack();
 
 

@@ -1,3 +1,8 @@
+package Project;
+import Project.Items.Item;
+import java.util.ArrayList;
+import java.util.List;
+
 //This class represents the player and all of the attributes associated with them
 public class Player {
 
@@ -7,6 +12,11 @@ public class Player {
     private double playerAttack = 1;
     private double playerDefense = 1;
     private double playerMana = 10;
+    private double maxPlayerHealth = 100;
+    private double maxPlayerAttack = 1;
+    private double maxPlayerDefense = 1;
+    private double maxPlayerMana = 10;
+    private List<Item> inventory = new ArrayList<>(null);
 
     //If a player object is created with no name passed then a default "Player" name is used
     public Player(){
@@ -65,4 +75,51 @@ public class Player {
         this.playerMana = playerMana;
     }
 
+    public double getMaxPlayerHealth() {
+        return maxPlayerHealth;
+    }
+
+    public void setMaxPlayerHealth(double maxPlayerHealth) {
+        this.maxPlayerHealth = maxPlayerHealth;
+    }
+
+    public double getMaxPlayerAttack() {
+        return maxPlayerAttack;
+    }
+
+    public void setMaxPlayerAttack(double maxPlayerAttack) {
+        this.maxPlayerAttack = maxPlayerAttack;
+    }
+
+    public double getMaxPlayerDefense() {
+        return maxPlayerDefense;
+    }
+
+    public void setMaxPlayerDefense(double maxPlayerDefense) {
+        this.maxPlayerDefense = maxPlayerDefense;
+    }
+
+    public double getMaxPlayerMana() {
+        return maxPlayerMana;
+    }
+
+    public void setMaxPlayerMana(double maxPlayerMana) {
+        this.maxPlayerMana = maxPlayerMana;
+    }
+
+    public List<Item> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(List<Item> inventory) {
+        this.inventory = inventory;
+    }
+
+    public void addItemToInventory(Item item){
+        this.inventory.add(item);
+    }
+
+    public void removeItemFromInventory(Item item){
+
+    }
 }

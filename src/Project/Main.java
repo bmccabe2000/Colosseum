@@ -1,4 +1,4 @@
-/*
+package Project;/*
 TODO 1.Create GUI (DONE), 2.Add game logic (Basic, includes event handling for GUI), 3.Add in more detail (Make if more interesting and fun), 4. Add a save system
 */
 import javafx.application.Application;
@@ -16,11 +16,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import Enemies.*;
+import Project.Enemies.*;
 
 import javax.swing.*;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 
 public class Main extends Application {
 
@@ -208,6 +207,7 @@ public class Main extends Application {
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+                winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
 
@@ -225,6 +225,7 @@ public class Main extends Application {
                 battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 mainPlayer.setPlayerDefense(mainPlayer.getPlayerDefense() - 1);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+                winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
 
@@ -244,6 +245,7 @@ public class Main extends Application {
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
+                winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
         //End of battle testing******************************************************************************************************************
@@ -253,12 +255,16 @@ public class Main extends Application {
 
     //Checks if the player or enemy has died and takes action accordingly
     //Ties favor the enemy since the players health is checked first
-    public void WinLose(Player player, Enemy enemy, TextArea messages){
+    public void winLose(Player player, Enemy enemy, TextArea messages,Stage mainStage, Scene switchScene){
         if(player.getPlayerHealth() <= 0){
-
+            JOptionPane.showMessageDialog(null, "You Lost!");
+            System.exit(0);
         }
-        else if(enemy.getEnemyHealth() <= 0 && player.getPlayerHealth() <= 0){
-
+        else if(enemy.getEnemyHealth() <= 0){
+            JOptionPane.showMessageDialog(null, "You Won!");
+            mainStage.setScene(switchScene);
+            messages.clear();
+            //TODO make a function that takes an int and switches the scene in the main stage accordingly using a switch statement - Maybe
         }
     }
 
