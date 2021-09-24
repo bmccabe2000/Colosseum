@@ -5,8 +5,8 @@ import Project.Player;
 
 public class HealthPotion extends Item{
 
-    public HealthPotion(String name, int cost) {
-        super(name, cost);
+    public HealthPotion(String name, int cost, String description) {
+        super(name, cost, description);
     }
 
     //The HealthPotion restores 10 health points

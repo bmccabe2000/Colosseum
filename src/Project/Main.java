@@ -2,6 +2,8 @@ package Project;/*
 TODO 1.Create GUI (DONE), 2.Add game logic (Basic, includes event handling for GUI), 3.Add in more detail (Make if more interesting and fun), 4. Add a save system
 */
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -37,14 +39,14 @@ public class Main extends Application {
         battleControlButtonsPane.setSpacing(50);
 
         //Control buttons
-        Button nextBtn = new Button("Next");
         Button attackBtn = new Button("Attack");
         Button defendBtn = new Button("Defend");
         Button spellBtn = new Button("Use Spell");
-        Button backButton = new Button ("Back");
+        Button itemBtn = new Button("Use Item");
+        Button backBtn = new Button ("Back");
 
         //Adding buttons to the control pane and setting them along the bottom of the application
-        battleControlButtonsPane.getChildren().addAll(nextBtn, attackBtn, defendBtn, spellBtn);
+        battleControlButtonsPane.getChildren().addAll(itemBtn, attackBtn, defendBtn, spellBtn);
         battleControlButtonsPane.setAlignment(Pos.CENTER);
         battleOrgPane.setBottom(battleControlButtonsPane);
 
@@ -93,14 +95,14 @@ public class Main extends Application {
         playerOptions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         //Creating a text area for the a description of their selection in the playerOptions listview
-        TextArea optionDescriptions = new TextArea();
-        optionDescriptions.setEditable(false);
+        TextArea optionDescription = new TextArea();
+        optionDescription.setEditable(false);
 
         //Setting the text area's to the betweenMenuOrgPane
-        betweenMenuOrgPane.setCenter(optionDescriptions);
+        betweenMenuOrgPane.setCenter(optionDescription);
         betweenMenuOrgPane.setRight(playerOptions);
 
-        //Height binding the options and optionDescriptions to reasonable sizes
+        //Height binding the options and optionDescription to reasonable sizes
         playerOptions.setPrefHeight(betweenScene.getHeight()/5);
 
         //Creating a select button
@@ -108,7 +110,7 @@ public class Main extends Application {
 
         //Setting up a simple HBox to house the select button
         HBox selectButtonBox = new HBox();
-        selectButtonBox.getChildren().addAll(menuSelectButton, backButton);
+        selectButtonBox.getChildren().addAll(menuSelectButton, backBtn);
         selectButtonBox.setAlignment(Pos.CENTER);
         selectButtonBox.setPadding(basicInsets);
         selectButtonBox.setSpacing(10);
@@ -121,7 +123,7 @@ public class Main extends Application {
         //Setting up an HBox to host a select button at the bottom of the pane
         HBox shopMenuButtonBox = new HBox();
         Button shopSelectButton = new Button("Select");
-        shopMenuButtonBox.getChildren().addAll(shopSelectButton, backButton);
+        shopMenuButtonBox.getChildren().addAll(shopSelectButton, backBtn);
         shopMenuButtonBox.setAlignment(Pos.CENTER);
         shopMenuButtonBox.setPadding(basicInsets);
         shopMenuButtonBox.setSpacing(10);
@@ -149,7 +151,7 @@ public class Main extends Application {
         //Setting up an HBox to host a select button at the bottom of the pane
         HBox trainingMenuButtonBox = new HBox();
         Button trainingSelectButton = new Button("Select");
-        trainingMenuButtonBox.getChildren().addAll(shopSelectButton, backButton);
+        trainingMenuButtonBox.getChildren().addAll(shopSelectButton, backBtn);
         trainingMenuButtonBox.setAlignment(Pos.CENTER);
         trainingMenuButtonBox.setPadding(basicInsets);
         trainingMenuButtonBox.setSpacing(10);
@@ -183,13 +185,12 @@ public class Main extends Application {
         Player mainPlayer = new Player();
         BattleLogic battleLogic = new BattleLogic();
         AuxiliaryLogic auxiliaryLogic = new AuxiliaryLogic();
-        auxiliaryLogic.start(messages, playerStats, enemyStats, nextBtn, mainPlayer);
+        auxiliaryLogic.start(messages, playerStats, enemyStats, itemBtn, mainPlayer);
         battleLogic.setPlayerStatusField(playerStats, mainPlayer);
         //Testing out battle mechanics**************************************************************************************************
-        battleLogic.battle(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+        battleLogic.battle(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
         //Pulling the enemy from the battle and setting it here to use for checks
         Enemy currentEnemy = battleLogic.getCurrentEnemy();
-
         DecimalFormat doubleFormat = new DecimalFormat("###.##");
 
         //*********************************************
@@ -205,7 +206,7 @@ public class Main extends Application {
                 currentEnemy.setEnemyHealth(Double.parseDouble(doubleFormat.format(currentEnemy.getEnemyHealth() - damage)));
                 messages.appendText("\nYou attacked " + currentEnemy.getEnemyName() + " for " + damage + " damage!");
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
-                battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                battleLogic.enemyTurn(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
@@ -222,7 +223,7 @@ public class Main extends Application {
                 mainPlayer.setPlayerDefense(mainPlayer.getPlayerDefense() + 1);
                 messages.appendText("\nYou defended and healed for " + healing + " health and " + manaRegen + " mana");
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
-                battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                battleLogic.enemyTurn(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 mainPlayer.setPlayerDefense(mainPlayer.getPlayerDefense() - 1);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
@@ -243,13 +244,73 @@ public class Main extends Application {
                     messages.appendText("\nYou try to throw a fireball but it fizzles out in your hand because you don't have enough mana");
                 }
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
-                battleLogic.enemyTurn(messages, playerStats, enemyStats, nextBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                battleLogic.enemyTurn(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
+
+        //TODO create a handler for using items
         //End of battle testing******************************************************************************************************************
 
+        //Start of Shop testing******************************************************************************************************************
+
+        //Handles the select button on the inBetween stage. Goes to different menus, the next battle, or exits the game based off what the player has selected.
+        menuSelectButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch(playerOptions.getSelectionModel().getSelectedItem()){
+                    case "Shop":
+                        primaryStage.setScene(shopScene);
+                        break;
+                    case "Training":
+                        primaryStage.setScene(trainingScene);
+                        break;
+                    case "Next Battle":
+                        battleLogic.battle(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                        primaryStage.setScene(battleScene);
+                        break;
+                    case "Exit Game":
+                        //TODO save before exit
+                        System.exit(0);
+                        break;
+                }
+            }
+        });
+
+        //Sets the description of the selected menu option to the optionDescription box
+        playerOptions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                switch(playerOptions.getSelectionModel().getSelectedItem()){
+                    case "Shop":
+                        optionDescription.clear();
+                        optionDescription.appendText("The shop is where you can buy items to help you in battle");
+                        break;
+                    case "Training":
+                        optionDescription.clear();
+                        optionDescription.appendText("The training grounds allow you to spend experience to upgrade your gladiator");
+                        break;
+                    case "Next Battle":
+                        optionDescription.clear();
+                        optionDescription.appendText("Starts the next battle");
+                        break;
+                    case "Exit Game":
+                        optionDescription.clear();
+                        optionDescription.appendText("Saves and Exits the game");
+                        break;
+                }
+            }
+        });
+
+        //Takes the player back to the inbetween menu
+        backBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+            primaryStage.setScene(betweenScene);
+            }
+        });
+
+        //End of Shop testing********************************************************************************************************************
 
     }
 
@@ -264,7 +325,6 @@ public class Main extends Application {
             JOptionPane.showMessageDialog(null, "You Won!");
             mainStage.setScene(switchScene);
             messages.clear();
-            //TODO make a function that takes an int and switches the scene in the main stage accordingly using a switch statement - Maybe
         }
     }
 

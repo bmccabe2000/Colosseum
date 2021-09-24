@@ -16,7 +16,7 @@ public class Player {
     private double maxPlayerAttack = 1;
     private double maxPlayerDefense = 1;
     private double maxPlayerMana = 10;
-    private List<Item> inventory = new ArrayList<>(null);
+    private List<Item> inventory = new ArrayList<Item>();
 
     //If a player object is created with no name passed then a default "Player" name is used
     public Player(){
