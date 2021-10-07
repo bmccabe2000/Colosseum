@@ -17,7 +17,7 @@ public class ItemBank {
 
     public void generateItems(){
         ItemList.clear();
-        HealthPotion healthPotion = new HealthPotion("Health Potion", 15, "A small vile filed with a thick red liquid. Heals for 10 HP");
+        HealthPotion healthPotion = new HealthPotion("Health Potion", 15, "A small vile filed with a thick red liquid. Heals for 10 HP", 0);
         ItemList.add(healthPotion);
         //TODO make more items
     }

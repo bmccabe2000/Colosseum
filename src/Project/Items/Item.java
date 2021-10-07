@@ -7,13 +7,15 @@ import Project.Player;
 public abstract class Item {
 
     String name = "item";
-    int cost = 0;
     String description = "";
+    int cost = 0;
+    int levelAppearance = 0;
 
-    public Item(String name, int cost, String description){
+    public Item(String name, int cost, String description, int levelAppearance){
         this.name = name;
         this.cost = cost;
         this.description = description;
+        this.levelAppearance = levelAppearance;
     }
 
     public String getName() {
@@ -38,6 +40,14 @@ public abstract class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getLevelAppearance() {
+        return levelAppearance;
+    }
+
+    public void setLevelAppearance(int levelAppearance) {
+        this.levelAppearance = levelAppearance;
     }
 
     //This function handles the effects of what an item does

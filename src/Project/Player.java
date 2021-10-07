@@ -12,6 +12,7 @@ public class Player {
     private double playerAttack = 1;
     private double playerDefense = 1;
     private double playerMana = 10;
+    private int playerGold = 0;
     private double maxPlayerHealth = 100;
     private double maxPlayerAttack = 1;
     private double maxPlayerDefense = 1;
@@ -120,6 +121,16 @@ public class Player {
     }
 
     public void removeItemFromInventory(Item item){
+        if(inventory.contains(item)){
+            this.inventory.remove(item);
+        }
+    }
 
+    public int getPlayerGold() {
+        return playerGold;
+    }
+
+    public void setPlayerGold(int playerGold) {
+        this.playerGold = playerGold;
     }
 }

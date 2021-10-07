@@ -43,10 +43,9 @@ public class Main extends Application {
         Button defendBtn = new Button("Defend");
         Button spellBtn = new Button("Use Spell");
         Button itemBtn = new Button("Use Item");
-        Button backBtn = new Button ("Back");
 
         //Adding buttons to the control pane and setting them along the bottom of the application
-        battleControlButtonsPane.getChildren().addAll(itemBtn, attackBtn, defendBtn, spellBtn);
+        battleControlButtonsPane.getChildren().addAll(attackBtn, defendBtn, spellBtn, itemBtn);
         battleControlButtonsPane.setAlignment(Pos.CENTER);
         battleOrgPane.setBottom(battleControlButtonsPane);
 
@@ -69,11 +68,6 @@ public class Main extends Application {
 
         //Creating a scene and assigning the overlaying orgPane to it
         Scene battleScene = new Scene(battleOrgPane, 1000, 500);
-
-        //Height binding the stat and message fields to the scene height
-        playerStats.setPrefHeight(battleScene.getHeight());
-        enemyStats.setPrefHeight(battleScene.getHeight());
-        messages.setPrefHeight(battleScene.getHeight());
 
         //Width binding the stat fields to an eighth the width of the scene and the messages field to half
         playerStats.setPrefWidth(battleScene.getWidth() / 8);
@@ -102,15 +96,12 @@ public class Main extends Application {
         betweenMenuOrgPane.setCenter(optionDescription);
         betweenMenuOrgPane.setRight(playerOptions);
 
-        //Height binding the options and optionDescription to reasonable sizes
-        playerOptions.setPrefHeight(betweenScene.getHeight()/5);
-
         //Creating a select button
-        Button menuSelectButton = new Button("Select");
+        Button betweenSelectButton = new Button("Select");
 
         //Setting up a simple HBox to house the select button
         HBox selectButtonBox = new HBox();
-        selectButtonBox.getChildren().addAll(menuSelectButton, backBtn);
+        selectButtonBox.getChildren().addAll(betweenSelectButton);
         selectButtonBox.setAlignment(Pos.CENTER);
         selectButtonBox.setPadding(basicInsets);
         selectButtonBox.setSpacing(10);
@@ -120,10 +111,13 @@ public class Main extends Application {
         BorderPane shopOrgPane = new BorderPane();
         shopOrgPane.setPadding(basicInsets);
 
+        //Setting up a select and back button for the shop
+        Button shopSelectButton = new Button("Select");
+        Button shopBackBtn = new Button ("Back");
+
         //Setting up an HBox to host a select button at the bottom of the pane
         HBox shopMenuButtonBox = new HBox();
-        Button shopSelectButton = new Button("Select");
-        shopMenuButtonBox.getChildren().addAll(shopSelectButton, backBtn);
+        shopMenuButtonBox.getChildren().addAll(shopSelectButton, shopBackBtn);
         shopMenuButtonBox.setAlignment(Pos.CENTER);
         shopMenuButtonBox.setPadding(basicInsets);
         shopMenuButtonBox.setSpacing(10);
@@ -134,32 +128,39 @@ public class Main extends Application {
         ListView<String> shopItems = new ListView(itemsForSale);
         shopItems.setEditable(false);
         shopItems.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        shopOrgPane.setLeft(shopItems);
+        shopOrgPane.setCenter(shopItems);
 
         //Setting up a text box that will hold a description of items the shop is selling that they user has selected
         TextArea itemDescription = new TextArea();
         itemDescription.setEditable(false);
-        shopOrgPane.setCenter(itemDescription);
+        shopOrgPane.setRight(itemDescription);
 
         //Setting up a new scene for the shop
         Scene shopScene = new Scene(shopOrgPane, 1000, 500);
+
+        //Height binding the itemDescription and shopItems to reasonable heights
+        shopItems.setPrefHeight(shopScene.getHeight()/5);
+        itemDescription.setPrefHeight(shopScene.getHeight()/5);
 
         //Creating one final menu for training
         BorderPane trainingOrgPane = new BorderPane();
         trainingOrgPane.setPadding(basicInsets);
 
+        //Setting up a select and back button for the training scene
+        Button trainingSelectButton = new Button("Select");
+        Button trainingBackBtn = new Button("Back");
+
         //Setting up an HBox to host a select button at the bottom of the pane
         HBox trainingMenuButtonBox = new HBox();
-        Button trainingSelectButton = new Button("Select");
-        trainingMenuButtonBox.getChildren().addAll(shopSelectButton, backBtn);
+        trainingMenuButtonBox.getChildren().addAll(trainingSelectButton, trainingBackBtn);
         trainingMenuButtonBox.setAlignment(Pos.CENTER);
         trainingMenuButtonBox.setPadding(basicInsets);
         trainingMenuButtonBox.setSpacing(10);
-        trainingOrgPane.setBottom(trainingSelectButton);
+        trainingOrgPane.setBottom(trainingMenuButtonBox);
 
         //Setting up a list view that will hold items the shop is selling
         ObservableList<String> trainingOptionsList = FXCollections.observableArrayList("PlaceHolder");
-        ListView<String> trainingOptions = new ListView(itemsForSale);
+        ListView<String> trainingOptions = new ListView(trainingOptionsList);
         trainingOptions.setEditable(false);
         trainingOptions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         trainingOrgPane.setLeft(trainingOptions);
@@ -253,10 +254,10 @@ public class Main extends Application {
         //TODO create a handler for using items
         //End of battle testing******************************************************************************************************************
 
-        //Start of Shop testing******************************************************************************************************************
+        //Start of between testing******************************************************************************************************************
 
         //Handles the select button on the inBetween stage. Goes to different menus, the next battle, or exits the game based off what the player has selected.
-        menuSelectButton.setOnAction(new EventHandler<ActionEvent>() {
+        betweenSelectButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 switch(playerOptions.getSelectionModel().getSelectedItem()){
@@ -273,6 +274,8 @@ public class Main extends Application {
                     case "Exit Game":
                         //TODO save before exit
                         System.exit(0);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -303,15 +306,29 @@ public class Main extends Application {
             }
         });
 
-        //Takes the player back to the inbetween menu
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
+        //Takes the player back to the inBetween menu
+        shopBackBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
             primaryStage.setScene(betweenScene);
             }
         });
 
-        //End of Shop testing********************************************************************************************************************
+        //Takes the player back to the inBetween menu
+        trainingBackBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                primaryStage.setScene(betweenScene);
+            }
+        });
 
+        //End of between testing******************************************************************************************************************
+
+        //Start of shop testing******************************************************************************************************************
+        //Generating items for the shop
+        ShopLogic shopLogic = new ShopLogic();
+        shopLogic.generateItemsWithinRange(mainPlayer, itemsForSale);
+
+
+        //End of shop testing******************************************************************************************************************
     }
 
     //Checks if the player or enemy has died and takes action accordingly
