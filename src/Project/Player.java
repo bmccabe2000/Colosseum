@@ -12,7 +12,7 @@ public class Player {
     private double playerAttack = 1;
     private double playerDefense = 1;
     private double playerMana = 10;
-    private int playerGold = 0;
+    private int playerGold = 100; //TODO change this back to 0 after done testing
     private double maxPlayerHealth = 100;
     private double maxPlayerAttack = 1;
     private double maxPlayerDefense = 1;

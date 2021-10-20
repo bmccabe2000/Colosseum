@@ -74,7 +74,7 @@ public class Main extends Application {
         enemyStats.setPrefWidth(battleScene.getWidth() / 8);
         messages.setPrefWidth(battleScene.getWidth() / 2);
 
-        //The following code creates an "between" scene that is used when the player is between battles
+        //The following code creates a "between" scene that is used when the player is between battles
         //Most of the coder is similar to that used for the battle scene but with different objects
         BorderPane betweenMenuOrgPane = new BorderPane();
         betweenMenuOrgPane.setPadding(basicInsets);
@@ -88,7 +88,7 @@ public class Main extends Application {
         playerOptions.setEditable(false);
         playerOptions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        //Creating a text area for the a description of their selection in the playerOptions listview
+        //Creating a text area for the description of their selection in the playerOptions listview
         TextArea optionDescription = new TextArea();
         optionDescription.setEditable(false);
 
@@ -130,7 +130,7 @@ public class Main extends Application {
         shopItems.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         shopOrgPane.setCenter(shopItems);
 
-        //Setting up a text box that will hold a description of items the shop is selling that they user has selected
+        //Setting up a text box that will hold a description of items the shop is selling that the user has selected
         TextArea itemDescription = new TextArea();
         itemDescription.setEditable(false);
         shopOrgPane.setRight(itemDescription);
@@ -165,7 +165,7 @@ public class Main extends Application {
         trainingOptions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         trainingOrgPane.setLeft(trainingOptions);
 
-        //Setting up a text box that will hold a description of items the shop is selling that they user has selected
+        //Setting up a text box that will hold a description of items the shop is selling that the user has selected
         TextArea trainingDescription = new TextArea();
         itemDescription.setEditable(false);
         trainingOrgPane.setCenter(trainingDescription);
@@ -257,26 +257,31 @@ public class Main extends Application {
         //Start of between testing******************************************************************************************************************
 
         //Handles the select button on the inBetween stage. Goes to different menus, the next battle, or exits the game based off what the player has selected.
+        //If nothing is selected an error message appears
         betweenSelectButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                switch(playerOptions.getSelectionModel().getSelectedItem()){
-                    case "Shop":
-                        primaryStage.setScene(shopScene);
-                        break;
-                    case "Training":
-                        primaryStage.setScene(trainingScene);
-                        break;
-                    case "Next Battle":
-                        battleLogic.battle(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
-                        primaryStage.setScene(battleScene);
-                        break;
-                    case "Exit Game":
-                        //TODO save before exit
-                        System.exit(0);
-                        break;
-                    default:
-                        break;
+
+                if(playerOptions.getSelectionModel().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Please select an option", "Nothing Selected", JOptionPane.WARNING_MESSAGE);
+                }
+                else{
+                    switch(playerOptions.getSelectionModel().getSelectedItem()){
+                        case "Shop":
+                            primaryStage.setScene(shopScene);
+                            break;
+                        case "Training":
+                            primaryStage.setScene(trainingScene);
+                            break;
+                        case "Next Battle":
+                            battleLogic.battle(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
+                            primaryStage.setScene(battleScene);
+                            break;
+                        case "Exit Game":
+                            //TODO save before exit
+                            System.exit(0);
+                            break;
+                    }
                 }
             }
         });
@@ -327,12 +332,28 @@ public class Main extends Application {
         ShopLogic shopLogic = new ShopLogic();
         shopLogic.generateItemsWithinRange(mainPlayer, itemsForSale);
 
+        //Making it so that when an item is selected a description of the item is displayed
+        shopItems.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                itemDescription.clear();
+                itemDescription.appendText(shopLogic.getItemDescription(shopItems.getSelectionModel().getSelectedItem()));
+            }
+        });
+
+        //When the shop button is clicked the buyItem function is called from the shopLogic class
+        shopSelectButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                shopLogic.buyItem(mainPlayer, shopItems.getSelectionModel().getSelectedItem(), itemsForSale);
+            }
+        });
 
         //End of shop testing******************************************************************************************************************
     }
 
     //Checks if the player or enemy has died and takes action accordingly
-    //Ties favor the enemy since the players health is checked first
+    //Ties favor the enemy since the player's health is checked first
     public void winLose(Player player, Enemy enemy, TextArea messages,Stage mainStage, Scene switchScene){
         if(player.getPlayerHealth() <= 0){
             JOptionPane.showMessageDialog(null, "You Lost!");
