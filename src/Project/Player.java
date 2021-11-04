@@ -3,16 +3,17 @@ import Project.Items.Item;
 import java.util.ArrayList;
 import java.util.List;
 
-//This class represents the player and all of the attributes associated with them
+//This class represents the player and all the attributes associated with them
 public class Player {
 
     private String playerName = "";
     private int playerLevel = 1;
+    private int playerExperience = 0;
     private double playerHealth = 100;
     private double playerAttack = 1;
     private double playerDefense = 1;
     private double playerMana = 10;
-    private int playerGold = 100; //TODO change this back to 0 after done testing
+    private int playerGold = 0;
     private double maxPlayerHealth = 100;
     private double maxPlayerAttack = 1;
     private double maxPlayerDefense = 1;
@@ -132,5 +133,21 @@ public class Player {
 
     public void setPlayerGold(int playerGold) {
         this.playerGold = playerGold;
+    }
+
+    public void addPlayerGold(int gold){
+        this.playerGold += gold;
+    }
+
+    public int getPlayerExperience() {
+        return playerExperience;
+    }
+
+    public void setPlayerExperience(int playerExperience) {
+        this.playerExperience = playerExperience;
+    }
+
+    public void addPlayerExperience(int experience){
+        this.playerExperience += experience;
     }
 }

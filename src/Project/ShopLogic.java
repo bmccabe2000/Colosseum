@@ -53,6 +53,7 @@ public class ShopLogic {
             if(items.get(i).getName().equals(selection)){
                 if(items.get(i).getCost() <= player.getPlayerGold()){
                     player.setPlayerGold(player.getPlayerGold() - items.get(i).getCost());
+                    player.addItemToInventory(items.get(i));
                     JOptionPane.showMessageDialog(null, "You have successfully bought " + items.get(i).getName(), "Item Purchased", JOptionPane.INFORMATION_MESSAGE);
                     itemsForSale.remove(items.get(i).getName());
                 }

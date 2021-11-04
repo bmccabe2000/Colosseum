@@ -14,10 +14,7 @@ public class AuxiliaryLogic {
 
         //TODO add loading function for player
         if (reply == JOptionPane.YES_OPTION) {
-            messages.setText("Save game loaded\nPress next to continue");
-            nxtBtn.setOnAction(e -> {
-                messages.clear();
-            });
+            JOptionPane.showMessageDialog(null, "Save game loaded", "Game Loaded", JOptionPane.INFORMATION_MESSAGE);
         }
         else {
             characterCreation(player);
@@ -28,7 +25,7 @@ public class AuxiliaryLogic {
 
     //Writes out the introduction text
     public void introduction(TextArea messages){
-        messages.setText("Welcome to Colosseum! Your goal is to win as many battles as you can.");
+        JOptionPane.showMessageDialog(null, "Welcome to Colosseum! Your goal is to win as many battles as you can.", "Welcome", JOptionPane.INFORMATION_MESSAGE);
     }
 
     //Takes the player through the character creation process

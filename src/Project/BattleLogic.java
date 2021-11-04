@@ -1,8 +1,12 @@
 package Project;
 
 import Project.Enemies.*;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+
+import javax.swing.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +17,9 @@ public class BattleLogic {
     private Enemy liveEnemy = null;
     private EnemyBank enemyBank = new EnemyBank();
     private List<Enemy> enemyList = new ArrayList<>();
-    DecimalFormat doubleFormat = new DecimalFormat("###.##");
+    private DecimalFormat doubleFormat = new DecimalFormat("###.##");
+    private int experienceEarned = 0;
+    private int goldEarned = 0;
 
     //Populates the list of enemies using the enemy bank class
     //Clear is called first to prevent and duplicate values from being put in the list
@@ -59,7 +65,7 @@ public class BattleLogic {
         enemyStats.setText("Name: " + enemy.getEnemyName() + "\n" + "Health: " + enemy.getEnemyHealth()  + "\n" + "Attack: " + enemy.getEnemyAttack() + "\n" + "Defense: " + enemy.getEnemyDefense() + "\n" + "Mana: " + enemy.getEnemyMana());
     }
 
-    //This functions handles the event handling for all of the buttons that the player can press on their turn
+    //This functions handles the event handling for all the buttons that the player can press on their turn
     public void enemyTurn(TextArea messages, TextArea playerStats, TextArea enemyStats, Button nxtBtn, Button attackBtn, Button defendBtn, Button spellBtn, Player player){
         double enemyDamage = Double.parseDouble(doubleFormat.format((Math.random() * ((liveEnemy.getEnemyAttack() + 2) - liveEnemy.getEnemyAttack()) + (liveEnemy.getEnemyAttack())) - (player.getPlayerDefense() * 0.5)));
         player.setPlayerHealth(Double.parseDouble(doubleFormat.format(player.getPlayerHealth() - enemyDamage)));
@@ -76,6 +82,51 @@ public class BattleLogic {
     //Returns the current enemy
     public Enemy getCurrentEnemy() {
         return liveEnemy;
+    }
+
+    //Checks if the player or enemy has died and takes action accordingly
+    //Ties favor the enemy since the player's health is checked first
+    public void winLose(Player player, Enemy enemy, TextArea messages, Stage mainStage, Scene switchScene){
+        if(player.getPlayerHealth() <= 0){
+            JOptionPane.showMessageDialog(null, "You Lost!");
+            System.exit(0);
+        }
+        else if(enemy.getEnemyHealth() <= 0){
+            JOptionPane.showMessageDialog(null, "You Won!");
+            mainStage.setScene(switchScene);
+            messages.clear();
+        }
+    }
+
+    public int getExperienceEarned() {
+        return experienceEarned;
+    }
+
+    public void setExperienceEarned(int experienceEarned) {
+        this.experienceEarned = experienceEarned;
+    }
+
+    public void addExperienceEarned(int experience){
+        this.experienceEarned += experience;
+    }
+
+    public int getGoldEarned() {
+        return goldEarned;
+    }
+
+    public void setGoldEarned(int goldEarned) {
+        this.goldEarned = goldEarned;
+    }
+
+    public void addGoldEarned(int gold){
+        this.goldEarned += gold;
+    }
+
+    //Generates a random number of gold and experience earned
+    //Modifiers will add to the default max (3) and min (1) of the fold and experience that can be earned per action
+    public void generateGoldAndExperienceEarned(int goldModifier, int experienceModifier){
+        addGoldEarned((int)Math.floor(Math.random()*((3 + goldModifier) - (1 + goldModifier))+ (1 + goldModifier)));
+        addExperienceEarned((int)Math.floor(Math.random()*((3 + experienceModifier) - (1 + experienceModifier))+ (1 + experienceModifier)));
     }
 
     //Sets the current enemy

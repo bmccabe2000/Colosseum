@@ -159,7 +159,7 @@ public class Main extends Application {
         trainingOrgPane.setBottom(trainingMenuButtonBox);
 
         //Setting up a list view that will hold items the shop is selling
-        ObservableList<String> trainingOptionsList = FXCollections.observableArrayList("PlaceHolder");
+        ObservableList<String> trainingOptionsList = FXCollections.observableArrayList("Health", "Attack", "Defense", "Mana");
         ListView<String> trainingOptions = new ListView(trainingOptionsList);
         trainingOptions.setEditable(false);
         trainingOptions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -209,7 +209,8 @@ public class Main extends Application {
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 battleLogic.enemyTurn(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
-                winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
+                battleLogic.generateGoldAndExperienceEarned(0,0);
+                battleLogic.winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
 
@@ -227,7 +228,8 @@ public class Main extends Application {
                 battleLogic.enemyTurn(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 mainPlayer.setPlayerDefense(mainPlayer.getPlayerDefense() - 1);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
-                winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
+                battleLogic.generateGoldAndExperienceEarned(0,0);
+                battleLogic.winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
 
@@ -247,7 +249,8 @@ public class Main extends Application {
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
                 battleLogic.enemyTurn(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                 battleLogic.updateStatuses(enemyStats, playerStats, mainPlayer);
-                winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
+                battleLogic.generateGoldAndExperienceEarned(0,0);
+                battleLogic.winLose(mainPlayer,currentEnemy,messages,primaryStage,betweenScene);
             }
         });
 
@@ -274,6 +277,7 @@ public class Main extends Application {
                             primaryStage.setScene(trainingScene);
                             break;
                         case "Next Battle":
+                            //TODO make it so the next battle works, currently the enemy dies and the battle instantly ends, investigate this
                             battleLogic.battle(messages, playerStats, enemyStats, itemBtn, attackBtn, defendBtn, spellBtn, mainPlayer);
                             primaryStage.setScene(battleScene);
                             break;
@@ -350,20 +354,90 @@ public class Main extends Application {
         });
 
         //End of shop testing******************************************************************************************************************
-    }
 
-    //Checks if the player or enemy has died and takes action accordingly
-    //Ties favor the enemy since the player's health is checked first
-    public void winLose(Player player, Enemy enemy, TextArea messages,Stage mainStage, Scene switchScene){
-        if(player.getPlayerHealth() <= 0){
-            JOptionPane.showMessageDialog(null, "You Lost!");
-            System.exit(0);
-        }
-        else if(enemy.getEnemyHealth() <= 0){
-            JOptionPane.showMessageDialog(null, "You Won!");
-            mainStage.setScene(switchScene);
-            messages.clear();
-        }
+        //Start of training testing************************************************************************************************************
+
+        //Describes exactly what each training option does when the user has one selected
+        trainingOptions.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                switch(trainingOptions.getSelectionModel().getSelectedItem()){
+                    case("Health"):
+                        trainingDescription.clear();
+                        trainingDescription.appendText("Increase your health by 10 points");
+                        break;
+                    case("Attack"):
+                        trainingDescription.clear();
+                        trainingDescription.appendText("Increase your attack by 1");
+                        break;
+                    case("Defense"):
+                        trainingDescription.clear();
+                        trainingDescription.appendText("Increase your defense by 1");
+                        break;
+                    case("Mana"):
+                        trainingDescription.clear();
+                        trainingDescription.appendText("Increase your mana by 5");
+                        break;
+                }
+            }
+        });
+
+        //Checks if the user has enough experience points to select the training option they want and if they do increase their stats accordingly
+        //If a user does not have an option selected or does not have enough experience points then a warning message is displayed with relevant information
+        trainingSelectButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(trainingOptions.getSelectionModel().getSelectedItem().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Please select an option", "Nothing Selected", JOptionPane.WARNING_MESSAGE);
+                }
+                else{
+                    switch(trainingOptions.getSelectionModel().getSelectedItem()){
+                        case("Health"):
+                            if(mainPlayer.getPlayerExperience() >= 75){
+                                mainPlayer.setMaxPlayerHealth(mainPlayer.getMaxPlayerHealth() + 10);
+                                mainPlayer.setPlayerHealth(mainPlayer.getMaxPlayerHealth());
+                                mainPlayer.setPlayerExperience(mainPlayer.getPlayerExperience() - 75);
+                            }
+                            else{
+                                JOptionPane.showMessageDialog(null,"You need " + (75 - mainPlayer.getPlayerExperience()) + " experience points", "Not enough Experience", JOptionPane.WARNING_MESSAGE);
+                            }
+                            break;
+                        case("Attack"):
+                            if(mainPlayer.getPlayerExperience() >= 50){
+                                mainPlayer.setMaxPlayerAttack(mainPlayer.getMaxPlayerAttack() + 1);
+                                mainPlayer.setPlayerAttack(mainPlayer.getMaxPlayerAttack());
+                                mainPlayer.setPlayerExperience(mainPlayer.getPlayerExperience() - 50);
+                            }
+                            else{
+                                JOptionPane.showMessageDialog(null,"You need " + (50 - mainPlayer.getPlayerExperience()) + " experience points", "Not enough Experience", JOptionPane.WARNING_MESSAGE);
+                            }
+                            break;
+                        case("Defense"):
+                            if(mainPlayer.getPlayerExperience() >= 50){
+                                mainPlayer.setMaxPlayerDefense(mainPlayer.getMaxPlayerDefense() + 1);
+                                mainPlayer.setPlayerDefense(mainPlayer.getMaxPlayerDefense());
+                                mainPlayer.setPlayerExperience(mainPlayer.getPlayerExperience() - 50);
+                            }
+                            else{
+                                JOptionPane.showMessageDialog(null,"You need " + (50 - mainPlayer.getPlayerExperience()) + " experience points", "Not enough Experience", JOptionPane.WARNING_MESSAGE);
+                            }
+                            break;
+                        case("Mana"):
+                            if(mainPlayer.getPlayerExperience() >= 100){
+                                mainPlayer.setMaxPlayerMana(mainPlayer.getMaxPlayerMana() + 5);
+                                mainPlayer.setPlayerMana(mainPlayer.getMaxPlayerMana());
+                                mainPlayer.setPlayerExperience(mainPlayer.getPlayerExperience() - 100);
+                            }
+                            else{
+                                JOptionPane.showMessageDialog(null,"You need " + (100 - mainPlayer.getPlayerExperience()) + " experience points", "Not enough Experience", JOptionPane.WARNING_MESSAGE);
+                            }
+                            break;
+                    }
+                }
+            }
+        });
+
+        //End of training testing************************************************************************************************************
     }
 
     public static void main(String[] args){
