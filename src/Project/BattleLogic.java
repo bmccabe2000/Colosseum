@@ -91,8 +91,11 @@ public class BattleLogic {
             JOptionPane.showMessageDialog(null, "You Lost!");
             System.exit(0);
         }
+        //If a player wins they are shown how much experience and gold they earned
         else if(enemy.getEnemyHealth() <= 0){
-            JOptionPane.showMessageDialog(null, "You Won!");
+            JOptionPane.showMessageDialog(null, "You Won!\nEXP Earned: " + experienceEarned + "\nGold Earned: " + goldEarned);
+            player.setPlayerExperience(player.getPlayerExperience() + experienceEarned);
+            player.setPlayerGold(player.getPlayerGold() + goldEarned);
             mainStage.setScene(switchScene);
             messages.clear();
         }
